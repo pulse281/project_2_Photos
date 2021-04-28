@@ -954,23 +954,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var modals = function modals() {
+  var clickBtn;
+
   function bindModal(triggerSelector, modalSelector, closeSelector) {
+    var destroy = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var trigger = document.querySelectorAll(triggerSelector),
         modal = document.querySelector(modalSelector),
-        windows = document.querySelectorAll('[data-modal]'),
         scrollWidth = calcScrollWidth();
-
-    function calcScrollWidth() {
-      var div = document.createElement('div');
-      div.style.cssText = "width: 50px; height: 50px; visibility: hidden; overflow-y: scroll;";
-      document.body.appendChild(div);
-      var scrollWidth = div.offsetWidth - div.clientWidth;
-      div.remove();
-      return scrollWidth;
-    }
-
     trigger.forEach(function (item) {
       item.addEventListener('click', function (e) {
+        clickBtn = true;
+
+        if (destroy) {
+          item.remove();
+        }
+
+        modal.classList.add('animated', 'fadeInDown');
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
         document.body.style.marginRight = "".concat(scrollWidth, "px");
@@ -985,8 +984,28 @@ var modals = function modals() {
     });
   }
 
-  function showModalFromTime(modalSelector, time) {
+  function openModalByScroll(selector) {
+    window.addEventListener('scroll', function () {
+      var docHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+
+      if (!clickBtn && window.pageYOffset + document.documentElement.clientHeight >= docHeight) {
+        document.querySelector(selector).click();
+      }
+    });
+  }
+
+  function calcScrollWidth() {
+    var div = document.createElement('div');
+    div.style.cssText = "width: 50px; height: 50px; visibility: hidden; overflow-y: scroll;";
+    document.body.appendChild(div);
+    var scrollWidth = div.offsetWidth - div.clientWidth;
+    div.remove();
+    return scrollWidth;
+  }
+
+  function showModalByTime(modalSelector, time) {
     setTimeout(function () {
+      var scrollWidth = calcScrollWidth();
       var display;
       document.querySelectorAll('[data-modal]').forEach(function (item) {
         if (getComputedStyle(item).display !== 'none') {
@@ -997,14 +1016,16 @@ var modals = function modals() {
       if (!display) {
         document.querySelector(modalSelector).style.display = 'block';
         document.body.style.overflow = 'hidden';
+        document.body.style.marginRight = "".concat(scrollWidth, "px");
       }
     }, time);
   }
 
   bindModal('.button-design', '.popup-design', 'popup-close');
   bindModal('.button-consultation', '.popup-consultation', 'popup-close');
-  bindModal('.fixed-gift', '.popup-gift', 'popup-close');
-  showModalFromTime('.popup-consultation', 9000);
+  bindModal('.fixed-gift', '.popup-gift', 'popup-close', true); //showModalByTime('.popup-consultation', 60000);
+
+  openModalByScroll('.fixed-gift');
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (modals);
