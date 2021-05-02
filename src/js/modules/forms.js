@@ -5,8 +5,10 @@ const forms = () => {
             success: 'assets/img/ok.png',
             download: 'assets/img/spinner.gif',
             fail: 'assets/img/fail.png'
-          };
-
+          },
+          fileInputs = document.querySelectorAll('[type="file"]'),
+          fileInputsLabels = document.querySelectorAll('.file_upload div');
+          
     form.forEach(item => {
         item.classList.add('animated');
         //item.parentNode.style.overflow = 'hidden';
@@ -14,6 +16,28 @@ const forms = () => {
     });
 
 
+    function changeUploadStatus() {
+        fileInputs.forEach((item, i) => {
+            item.addEventListener('input', (e) => {
+             const file = item.files[0].name.split('.');
+     
+             let   fileName = file[0],
+                   fileCoder = file[1];
+     
+             if (fileName.length > 6) {
+                 fileName = fileName.slice(0, 5) + '..';
+             }
+             if (file.length == 1) {
+                 fileCoder = ' ';
+             }
+     
+             console.log(fileName + '.' + fileCoder);
+             fileInputsLabels[i].textContent = `${fileName}.${fileCoder}`;
+     
+            });
+         });
+    }
+    changeUploadStatus();
 
     const postData = async (url, data) => {
         let res = await fetch(url, {
@@ -58,6 +82,9 @@ const forms = () => {
             })
             .finally(() => {
                 form.reset();
+                fileInputsLabels.forEach(label => {
+                    label.textContent = 'Файл не выбран';
+                });
             });            
         });
 
