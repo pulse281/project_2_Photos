@@ -5460,6 +5460,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_sliders__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/sliders */ "./src/js/modules/sliders.js");
 /* harmony import */ var _modules_styles__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/styles */ "./src/js/modules/styles.js");
 /* harmony import */ var _modules_calc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/calc */ "./src/js/modules/calc.js");
+/* harmony import */ var _modules_portfolio__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/portfolio */ "./src/js/modules/portfolio.js");
+
 
 
 
@@ -5468,12 +5470,14 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
+  var calcArgs = {};
   Object(_modules_modals__WEBPACK_IMPORTED_MODULE_0__["default"])();
-  Object(_modules_forms__WEBPACK_IMPORTED_MODULE_1__["default"])();
+  Object(_modules_forms__WEBPACK_IMPORTED_MODULE_1__["default"])(calcArgs);
   Object(_modules_sliders__WEBPACK_IMPORTED_MODULE_2__["default"])('.main-slider-item', 'vertical', 5000);
   Object(_modules_sliders__WEBPACK_IMPORTED_MODULE_2__["default"])('.feedback-slider-item', 'horizont', 3000, '.main-prev-btn', '.main-next-btn');
   Object(_modules_styles__WEBPACK_IMPORTED_MODULE_3__["default"])();
-  Object(_modules_calc__WEBPACK_IMPORTED_MODULE_4__["default"])('.calc-price', '.promocode', '#size', '#material', '#options');
+  Object(_modules_calc__WEBPACK_IMPORTED_MODULE_4__["default"])(calcArgs, '.calc-price', '.promocode', 'IWANTPOPART', '#size', '#material', '#options');
+  Object(_modules_portfolio__WEBPACK_IMPORTED_MODULE_5__["default"])('.portfolio-menu', '.portfolio-block');
 });
 
 /***/ }),
@@ -5491,18 +5495,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es_number_constructor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_number_constructor__WEBPACK_IMPORTED_MODULE_0__);
 
 
-var calc = function calc(resArea, promoInput) {
+var calc = function calc(args, resArea, promoInput, promoVerification) {
   var area = document.querySelector(resArea),
-      promoInp = document.querySelector(promoInput),
-      size = document.querySelector(arguments.length <= 2 ? undefined : arguments[2]),
-      material = document.querySelector(arguments.length <= 3 ? undefined : arguments[3]),
-      options = document.querySelector(arguments.length <= 4 ? undefined : arguments[4]);
-  var args = {};
+      promo = document.querySelector(promoInput),
+      size = document.querySelector(arguments.length <= 4 ? undefined : arguments[4]),
+      material = document.querySelector(arguments.length <= 5 ? undefined : arguments[5]),
+      options = document.querySelector(arguments.length <= 6 ? undefined : arguments[6]);
   console.log(size.value);
 
   function changeInput(input) {
     input.addEventListener('input', function () {
       args[input.id] = Number(input.value);
+
+      if (input == promo) {
+        args.p = input.value.toUpperCase();
+      }
+
       console.log(args[input.id]);
       calculate();
     });
@@ -5511,18 +5519,27 @@ var calc = function calc(resArea, promoInput) {
   changeInput(size);
   changeInput(material);
   changeInput(options);
+  changeInput(promo);
 
   function calculate() {
     if (args.size && args.material && args.options) {
       var res = args.size + args.material + args.options;
-      area.textContent = res;
+      area.textContent = UsePromo(args.p, res);
     } else if (args.size && args.material && isNaN(args.options)) {
       var _res = args.size + args.material;
 
-      area.textContent = _res;
+      area.textContent = UsePromo(args.p, _res);
     } else {
       area.textContent = 'Для расчета нужно выбрать размер картины и материал картины';
     }
+  }
+
+  function UsePromo(promo, sum) {
+    if (promo === promoVerification) {
+      sum = sum - sum * 0.3;
+    }
+
+    return sum;
   }
 };
 
@@ -5567,7 +5584,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var forms = function forms() {
+var forms = function forms(calcArgs) {
   var form = document.querySelectorAll('form'),
       msg = {
     success: 'assets/img/ok.png',
@@ -5575,7 +5592,8 @@ var forms = function forms() {
     fail: 'assets/img/fail.png'
   },
       fileInputs = document.querySelectorAll('[type="file"]'),
-      fileInputsLabels = document.querySelectorAll('.file_upload div');
+      fileInputsLabels = document.querySelectorAll('.file_upload div'),
+      calcArea = document.querySelector('.calc-price');
   form.forEach(function (item) {
     item.classList.add('animated'); //item.parentNode.style.overflow = 'hidden';
 
@@ -5657,24 +5675,30 @@ var forms = function forms() {
       var formData = new FormData(form);
       postData('assets/server.php', formData).then(function () {
         div.remove();
-        creatMsgStatus(form, msg.success);
+        creatMsgStatus(form, msg.success, 'Отправлено');
       }).catch(function (e) {
         div.remove();
-        creatMsgStatus(form, msg.fail);
+        creatMsgStatus(form, msg.fail, 'Произошла ошибка');
       }).finally(function () {
         form.reset();
         fileInputsLabels.forEach(function (label) {
           label.textContent = 'Файл не выбран';
         });
+        calcArea.textContent = 'Для расчета нужно выбрать размер картины и материал картины';
+
+        for (var key in calcArgs) {
+          calcArgs[key] = '';
+        }
       });
     });
   }
 
-  function creatMsgStatus(form, msg) {
+  function creatMsgStatus(form, msg, alt) {
     var div = document.createElement('div'),
         img = document.createElement('img');
     img.setAttribute('src', msg);
-    img.setAttribute('alt', 'Произошла ошибка');
+    img.setAttribute('alt', alt);
+    div.style.textAlign = 'center';
     div.append(img);
     form.classList.add('fadeOutDown');
     setTimeout(function () {
@@ -5783,6 +5807,59 @@ var modals = function modals() {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (modals);
+
+/***/ }),
+
+/***/ "./src/js/modules/portfolio.js":
+/*!*************************************!*\
+  !*** ./src/js/modules/portfolio.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var portfolio = function portfolio(menuSelector, blocksSelector) {
+  var menu = document.querySelector(menuSelector),
+      blocks = document.querySelectorAll(blocksSelector),
+      category = document.querySelectorAll('.portfolio-menu li');
+  var classes = {
+    curent: 'all',
+    change: ''
+  };
+  menu.addEventListener('click', function (e) {
+    var target = e.target;
+    category.forEach(function (item) {
+      item.classList.remove('active');
+
+      if (target && target == item) {
+        classes.change = item.className;
+        item.classList.add('active');
+        blocks.forEach(function (block) {
+          block.style.display = 'none';
+
+          if (block.classList.contains(classes.change)) {
+            block.classList.add('animated', 'fadeIn');
+            block.style.display = 'block';
+          }
+        });
+        classes.curent = classes.change;
+
+        if (item.classList.contains('grandmother') || item.classList.contains('granddad')) {
+          document.querySelector('.portfolio-no').style.display = 'block';
+        } else {
+          document.querySelector('.portfolio-no').style.display = 'none';
+        }
+      }
+    });
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (portfolio);
 
 /***/ }),
 

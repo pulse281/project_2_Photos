@@ -1,4 +1,4 @@
-const forms = () => {
+const forms = (calcArgs) => {
 
     const form = document.querySelectorAll('form'),
           msg = {
@@ -7,7 +7,8 @@ const forms = () => {
             fail: 'assets/img/fail.png'
           },
           fileInputs = document.querySelectorAll('[type="file"]'),
-          fileInputsLabels = document.querySelectorAll('.file_upload div');
+          fileInputsLabels = document.querySelectorAll('.file_upload div'),
+          calcArea = document.querySelector('.calc-price');
           
     form.forEach(item => {
         item.classList.add('animated');
@@ -74,28 +75,33 @@ const forms = () => {
             postData('assets/server.php', formData)
             .then(() => {
                 div.remove();
-                creatMsgStatus(form, msg.success);
+                creatMsgStatus(form, msg.success, 'Отправлено');
             })
             .catch((e) => {
                 div.remove();
-                creatMsgStatus(form, msg.fail);
+                creatMsgStatus(form, msg.fail, 'Произошла ошибка');
             })
             .finally(() => {
                 form.reset();
                 fileInputsLabels.forEach(label => {
                     label.textContent = 'Файл не выбран';
                 });
-            });            
+                calcArea.textContent = 'Для расчета нужно выбрать размер картины и материал картины';
+                for (let key in calcArgs) {
+                    calcArgs[key] = '';
+                }
+            });  
         });
 
     }
 
-    function creatMsgStatus(form, msg) {
+    function creatMsgStatus(form, msg, alt) {
         const div = document.createElement('div'),
               img = document.createElement('img');
               
         img.setAttribute('src', msg);
-        img.setAttribute('alt', 'Произошла ошибка');
+        img.setAttribute('alt', alt);
+        div.style.textAlign = 'center';
         div.append(img);
         form.classList.add('fadeOutDown');
         setTimeout(() => {
