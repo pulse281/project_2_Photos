@@ -31,8 +31,7 @@ const forms = (calcArgs) => {
              if (file.length == 1) {
                  fileCoder = ' ';
              }
-     
-             console.log(fileName + '.' + fileCoder);
+
              fileInputsLabels[i].textContent = `${fileName}.${fileCoder}`;
      
             });

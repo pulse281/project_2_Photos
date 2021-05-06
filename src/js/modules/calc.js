@@ -6,7 +6,6 @@ const area = document.querySelector(resArea),
       material = document.querySelector(arg[1]),
       options = document.querySelector(arg[2]);
 
-console.log(size.value);
 
 function changeInput(input) {
     input.addEventListener('input', () => {
@@ -14,7 +13,6 @@ function changeInput(input) {
         if (input == promo) {
             args.p = input.value.toUpperCase();
         }
-        console.log(args[input.id]);
         calculate();
     });
 }

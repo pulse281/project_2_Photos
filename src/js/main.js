@@ -4,6 +4,8 @@ import sliders from './modules/sliders';
 import styles from './modules/styles';
 import calc from './modules/calc';
 import portfolio from './modules/portfolio';
+import size from './modules/showSizePict';
+import accordion from './modules/accordion';
 
 window.addEventListener('DOMContentLoaded', () => {
 'use strict';
@@ -17,5 +19,7 @@ sliders('.feedback-slider-item', 'horizont', 3000, '.main-prev-btn', '.main-next
 styles();
 calc(calcArgs, '.calc-price', '.promocode', 'IWANTPOPART', '#size', '#material', '#options');
 portfolio('.portfolio-menu', '.portfolio-block');
+size('.sizes-block');
+accordion('.accordion-heading', '.accordion-block');
 
 });

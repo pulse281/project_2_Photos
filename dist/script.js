@@ -5461,6 +5461,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_styles__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/styles */ "./src/js/modules/styles.js");
 /* harmony import */ var _modules_calc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/calc */ "./src/js/modules/calc.js");
 /* harmony import */ var _modules_portfolio__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/portfolio */ "./src/js/modules/portfolio.js");
+/* harmony import */ var _modules_showSizePict__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/showSizePict */ "./src/js/modules/showSizePict.js");
+/* harmony import */ var _modules_accordion__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/accordion */ "./src/js/modules/accordion.js");
+
+
 
 
 
@@ -5478,7 +5482,46 @@ window.addEventListener('DOMContentLoaded', function () {
   Object(_modules_styles__WEBPACK_IMPORTED_MODULE_3__["default"])();
   Object(_modules_calc__WEBPACK_IMPORTED_MODULE_4__["default"])(calcArgs, '.calc-price', '.promocode', 'IWANTPOPART', '#size', '#material', '#options');
   Object(_modules_portfolio__WEBPACK_IMPORTED_MODULE_5__["default"])('.portfolio-menu', '.portfolio-block');
+  Object(_modules_showSizePict__WEBPACK_IMPORTED_MODULE_6__["default"])('.sizes-block');
+  Object(_modules_accordion__WEBPACK_IMPORTED_MODULE_7__["default"])('.accordion-heading', '.accordion-block');
 });
+
+/***/ }),
+
+/***/ "./src/js/modules/accordion.js":
+/*!*************************************!*\
+  !*** ./src/js/modules/accordion.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var accordion = function accordion(headersSelector, blocksSelector) {
+  var headers = document.querySelectorAll(headersSelector),
+      blocks = document.querySelectorAll(blocksSelector);
+
+  function hideBlocks() {
+    blocks.forEach(function (item) {
+      item.classList.add('animated', 'zoomIn');
+      item.style.display = 'none';
+    });
+  }
+
+  hideBlocks();
+  headers.forEach(function (item, i) {
+    item.addEventListener('click', function () {
+      hideBlocks();
+      blocks[i].style.display = 'block';
+    });
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (accordion);
 
 /***/ }),
 
@@ -5501,7 +5544,6 @@ var calc = function calc(args, resArea, promoInput, promoVerification) {
       size = document.querySelector(arguments.length <= 4 ? undefined : arguments[4]),
       material = document.querySelector(arguments.length <= 5 ? undefined : arguments[5]),
       options = document.querySelector(arguments.length <= 6 ? undefined : arguments[6]);
-  console.log(size.value);
 
   function changeInput(input) {
     input.addEventListener('input', function () {
@@ -5511,7 +5553,6 @@ var calc = function calc(args, resArea, promoInput, promoVerification) {
         args.p = input.value.toUpperCase();
       }
 
-      console.log(args[input.id]);
       calculate();
     });
   }
@@ -5615,7 +5656,6 @@ var forms = function forms(calcArgs) {
           fileCoder = ' ';
         }
 
-        console.log(fileName + '.' + fileCoder);
         fileInputsLabels[i].textContent = "".concat(fileName, ".").concat(fileCoder);
       });
     });
@@ -5860,6 +5900,37 @@ var portfolio = function portfolio(menuSelector, blocksSelector) {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (portfolio);
+
+/***/ }),
+
+/***/ "./src/js/modules/showSizePict.js":
+/*!****************************************!*\
+  !*** ./src/js/modules/showSizePict.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var size = function size(itemSelectors) {
+  var item = document.querySelectorAll(itemSelectors);
+  item.forEach(function (picture, i) {
+    picture.addEventListener('mouseover', function (e) {
+      var img = picture.querySelector('img');
+      img.setAttribute('src', "assets/img/sizes-".concat(i + 1, "-1.png"));
+    });
+    picture.addEventListener('mouseout', function (e) {
+      var img = picture.querySelector('img');
+      img.setAttribute('src', "assets/img/sizes-".concat(i + 1, ".png"));
+    });
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (size);
 
 /***/ }),
 
