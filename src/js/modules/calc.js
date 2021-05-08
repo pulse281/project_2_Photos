@@ -1,45 +1,33 @@
-const calc = (args, resArea, promoInput, promoVerification, ...arg) => {
+const calc = (size, material, options, result, promo, promoVerification) => {
 
-const area = document.querySelector(resArea),
-      promo = document.querySelector(promoInput),
-      size = document.querySelector(arg[0]),
-      material = document.querySelector(arg[1]),
-      options = document.querySelector(arg[2]);
+    const sizeBlock = document.querySelector(size),
+          materialBlock = document.querySelector(material),
+          optionsBlock = document.querySelector(options),
+          promoBlock = document.querySelector(promo),
+          resultBlock = document.querySelector(result);
 
+    let sum = 0;
 
-function changeInput(input) {
-    input.addEventListener('input', () => {
-        args[input.id] = Number(input.value);
-        if (input == promo) {
-            args.p = input.value.toUpperCase();
+    const calcFunc = () => {
+        sum = Math.round((+sizeBlock.value) + (+materialBlock.value) + (+optionsBlock.value));
+
+        if (sizeBlock.value == '' || materialBlock.value == '') {
+            resultBlock.textContent = 'Для расчета нужно выбрать размер картины и материал картины';
+        } else if (promoBlock.value === promoVerification) {
+            resultBlock.textContent = Math.round(sum * 0.7);
+        } else {
+            resultBlock.textContent = sum;
         }
-        calculate();
+    };
+
+    sizeBlock.addEventListener('change', calcFunc);
+    materialBlock.addEventListener('change', calcFunc);
+    optionsBlock.addEventListener('change', calcFunc);
+    promoBlock.addEventListener('input', () => {
+        promoBlock.value = promoBlock.value.toUpperCase();
+        calcFunc();
     });
-}
-changeInput(size);
-changeInput(material);
-changeInput(options);
-changeInput(promo);
 
-function calculate() {
-    if(args.size && args.material && args.options) {
-        let res = args.size + args.material + args.options;
-        area.textContent = UsePromo(args.p, res);
-    }
-    else if (args.size && args.material && isNaN(args.options)) {
-        let res = args.size + args.material;
-        area.textContent = UsePromo(args.p, res);
-    } else {
-        area.textContent = 'Для расчета нужно выбрать размер картины и материал картины';
-    }
-}
-
-function UsePromo(promo, sum) {
-    if (promo === promoVerification) {
-        sum = sum - (sum * 0.3);
-    }
-    return sum;
-}
 
 };
 

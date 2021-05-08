@@ -6,6 +6,7 @@ import calc from './modules/calc';
 import portfolio from './modules/portfolio';
 import size from './modules/showSizePict';
 import accordion from './modules/accordion';
+import burger from './modules/burgerMenu';
 
 window.addEventListener('DOMContentLoaded', () => {
 'use strict';
@@ -17,9 +18,10 @@ forms(calcArgs);
 sliders('.main-slider-item', 'vertical', 5000);
 sliders('.feedback-slider-item', 'horizont', 3000, '.main-prev-btn', '.main-next-btn');
 styles();
-calc(calcArgs, '.calc-price', '.promocode', 'IWANTPOPART', '#size', '#material', '#options');
+calc('#size', '#material', '#options', '.calc-price', '.promocode', 'IWANTPOPART', );
 portfolio('.portfolio-menu', '.portfolio-block');
 size('.sizes-block');
 accordion('.accordion-heading', '.accordion-block');
+burger();
 
 });

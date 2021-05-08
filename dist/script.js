@@ -1350,34 +1350,6 @@ module.exports = fails(function () {
 
 /***/ }),
 
-/***/ "./node_modules/core-js/internals/inherit-if-required.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/core-js/internals/inherit-if-required.js ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__(/*! ../internals/is-object */ "./node_modules/core-js/internals/is-object.js");
-var setPrototypeOf = __webpack_require__(/*! ../internals/object-set-prototype-of */ "./node_modules/core-js/internals/object-set-prototype-of.js");
-
-// makes subclassing work correct for wrapped built-ins
-module.exports = function ($this, dummy, Wrapper) {
-  var NewTarget, NewTargetPrototype;
-  if (
-    // it can work only with native `setPrototypeOf`
-    setPrototypeOf &&
-    // we haven't completely correct pre-ES6 way for getting `new.target`, so use this
-    typeof (NewTarget = dummy.constructor) == 'function' &&
-    NewTarget !== Wrapper &&
-    isObject(NewTargetPrototype = NewTarget.prototype) &&
-    NewTargetPrototype !== Wrapper.prototype
-  ) setPrototypeOf($this, NewTargetPrototype);
-  return $this;
-};
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/internals/inspect-source.js":
 /*!**********************************************************!*\
   !*** ./node_modules/core-js/internals/inspect-source.js ***!
@@ -2755,45 +2727,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/core-js/internals/string-trim.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/core-js/internals/string-trim.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var requireObjectCoercible = __webpack_require__(/*! ../internals/require-object-coercible */ "./node_modules/core-js/internals/require-object-coercible.js");
-var whitespaces = __webpack_require__(/*! ../internals/whitespaces */ "./node_modules/core-js/internals/whitespaces.js");
-
-var whitespace = '[' + whitespaces + ']';
-var ltrim = RegExp('^' + whitespace + whitespace + '*');
-var rtrim = RegExp(whitespace + whitespace + '*$');
-
-// `String.prototype.{ trim, trimStart, trimEnd, trimLeft, trimRight }` methods implementation
-var createMethod = function (TYPE) {
-  return function ($this) {
-    var string = String(requireObjectCoercible($this));
-    if (TYPE & 1) string = string.replace(ltrim, '');
-    if (TYPE & 2) string = string.replace(rtrim, '');
-    return string;
-  };
-};
-
-module.exports = {
-  // `String.prototype.{ trimLeft, trimStart }` methods
-  // https://tc39.github.io/ecma262/#sec-string.prototype.trimstart
-  start: createMethod(1),
-  // `String.prototype.{ trimRight, trimEnd }` methods
-  // https://tc39.github.io/ecma262/#sec-string.prototype.trimend
-  end: createMethod(2),
-  // `String.prototype.trim` method
-  // https://tc39.github.io/ecma262/#sec-string.prototype.trim
-  trim: createMethod(3)
-};
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/internals/task.js":
 /*!************************************************!*\
   !*** ./node_modules/core-js/internals/task.js ***!
@@ -3156,20 +3089,6 @@ module.exports = function (name) {
 
 /***/ }),
 
-/***/ "./node_modules/core-js/internals/whitespaces.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/core-js/internals/whitespaces.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// a string of all valid unicode whitespaces
-// eslint-disable-next-line max-len
-module.exports = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/internals/wrapped-well-known-symbol.js":
 /*!*********************************************************************!*\
   !*** ./node_modules/core-js/internals/wrapped-well-known-symbol.js ***!
@@ -3430,96 +3349,6 @@ if (DESCRIPTORS && !(NAME in FunctionPrototype)) {
       }
     }
   });
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/es.number.constructor.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/core-js/modules/es.number.constructor.js ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var DESCRIPTORS = __webpack_require__(/*! ../internals/descriptors */ "./node_modules/core-js/internals/descriptors.js");
-var global = __webpack_require__(/*! ../internals/global */ "./node_modules/core-js/internals/global.js");
-var isForced = __webpack_require__(/*! ../internals/is-forced */ "./node_modules/core-js/internals/is-forced.js");
-var redefine = __webpack_require__(/*! ../internals/redefine */ "./node_modules/core-js/internals/redefine.js");
-var has = __webpack_require__(/*! ../internals/has */ "./node_modules/core-js/internals/has.js");
-var classof = __webpack_require__(/*! ../internals/classof-raw */ "./node_modules/core-js/internals/classof-raw.js");
-var inheritIfRequired = __webpack_require__(/*! ../internals/inherit-if-required */ "./node_modules/core-js/internals/inherit-if-required.js");
-var toPrimitive = __webpack_require__(/*! ../internals/to-primitive */ "./node_modules/core-js/internals/to-primitive.js");
-var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
-var create = __webpack_require__(/*! ../internals/object-create */ "./node_modules/core-js/internals/object-create.js");
-var getOwnPropertyNames = __webpack_require__(/*! ../internals/object-get-own-property-names */ "./node_modules/core-js/internals/object-get-own-property-names.js").f;
-var getOwnPropertyDescriptor = __webpack_require__(/*! ../internals/object-get-own-property-descriptor */ "./node_modules/core-js/internals/object-get-own-property-descriptor.js").f;
-var defineProperty = __webpack_require__(/*! ../internals/object-define-property */ "./node_modules/core-js/internals/object-define-property.js").f;
-var trim = __webpack_require__(/*! ../internals/string-trim */ "./node_modules/core-js/internals/string-trim.js").trim;
-
-var NUMBER = 'Number';
-var NativeNumber = global[NUMBER];
-var NumberPrototype = NativeNumber.prototype;
-
-// Opera ~12 has broken Object#toString
-var BROKEN_CLASSOF = classof(create(NumberPrototype)) == NUMBER;
-
-// `ToNumber` abstract operation
-// https://tc39.github.io/ecma262/#sec-tonumber
-var toNumber = function (argument) {
-  var it = toPrimitive(argument, false);
-  var first, third, radix, maxCode, digits, length, index, code;
-  if (typeof it == 'string' && it.length > 2) {
-    it = trim(it);
-    first = it.charCodeAt(0);
-    if (first === 43 || first === 45) {
-      third = it.charCodeAt(2);
-      if (third === 88 || third === 120) return NaN; // Number('+0x1') should be NaN, old V8 fix
-    } else if (first === 48) {
-      switch (it.charCodeAt(1)) {
-        case 66: case 98: radix = 2; maxCode = 49; break; // fast equal of /^0b[01]+$/i
-        case 79: case 111: radix = 8; maxCode = 55; break; // fast equal of /^0o[0-7]+$/i
-        default: return +it;
-      }
-      digits = it.slice(2);
-      length = digits.length;
-      for (index = 0; index < length; index++) {
-        code = digits.charCodeAt(index);
-        // parseInt parses a string to a first unavailable symbol
-        // but ToNumber should return NaN if a string contains unavailable symbols
-        if (code < 48 || code > maxCode) return NaN;
-      } return parseInt(digits, radix);
-    }
-  } return +it;
-};
-
-// `Number` constructor
-// https://tc39.github.io/ecma262/#sec-number-constructor
-if (isForced(NUMBER, !NativeNumber(' 0o1') || !NativeNumber('0b1') || NativeNumber('+0x1'))) {
-  var NumberWrapper = function Number(value) {
-    var it = arguments.length < 1 ? 0 : value;
-    var dummy = this;
-    return dummy instanceof NumberWrapper
-      // check on 1..constructor(foo) case
-      && (BROKEN_CLASSOF ? fails(function () { NumberPrototype.valueOf.call(dummy); }) : classof(dummy) != NUMBER)
-        ? inheritIfRequired(new NativeNumber(toNumber(it)), dummy, NumberWrapper) : toNumber(it);
-  };
-  for (var keys = DESCRIPTORS ? getOwnPropertyNames(NativeNumber) : (
-    // ES3:
-    'MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY,' +
-    // ES2015 (in case, if modules with ES2015 Number statics required before):
-    'EPSILON,isFinite,isInteger,isNaN,isSafeInteger,MAX_SAFE_INTEGER,' +
-    'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger'
-  ).split(','), j = 0, key; keys.length > j; j++) {
-    if (has(NativeNumber, key = keys[j]) && !has(NumberWrapper, key)) {
-      defineProperty(NumberWrapper, key, getOwnPropertyDescriptor(NativeNumber, key));
-    }
-  }
-  NumberWrapper.prototype = NumberPrototype;
-  NumberPrototype.constructor = NumberWrapper;
-  redefine(global, NUMBER, NumberWrapper);
 }
 
 
@@ -5463,6 +5292,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_portfolio__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/portfolio */ "./src/js/modules/portfolio.js");
 /* harmony import */ var _modules_showSizePict__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/showSizePict */ "./src/js/modules/showSizePict.js");
 /* harmony import */ var _modules_accordion__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/accordion */ "./src/js/modules/accordion.js");
+/* harmony import */ var _modules_burgerMenu__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modules/burgerMenu */ "./src/js/modules/burgerMenu.js");
+
 
 
 
@@ -5480,10 +5311,11 @@ window.addEventListener('DOMContentLoaded', function () {
   Object(_modules_sliders__WEBPACK_IMPORTED_MODULE_2__["default"])('.main-slider-item', 'vertical', 5000);
   Object(_modules_sliders__WEBPACK_IMPORTED_MODULE_2__["default"])('.feedback-slider-item', 'horizont', 3000, '.main-prev-btn', '.main-next-btn');
   Object(_modules_styles__WEBPACK_IMPORTED_MODULE_3__["default"])();
-  Object(_modules_calc__WEBPACK_IMPORTED_MODULE_4__["default"])(calcArgs, '.calc-price', '.promocode', 'IWANTPOPART', '#size', '#material', '#options');
+  Object(_modules_calc__WEBPACK_IMPORTED_MODULE_4__["default"])('#size', '#material', '#options', '.calc-price', '.promocode', 'IWANTPOPART');
   Object(_modules_portfolio__WEBPACK_IMPORTED_MODULE_5__["default"])('.portfolio-menu', '.portfolio-block');
   Object(_modules_showSizePict__WEBPACK_IMPORTED_MODULE_6__["default"])('.sizes-block');
   Object(_modules_accordion__WEBPACK_IMPORTED_MODULE_7__["default"])('.accordion-heading', '.accordion-block');
+  Object(_modules_burgerMenu__WEBPACK_IMPORTED_MODULE_8__["default"])();
 });
 
 /***/ }),
@@ -5513,6 +5345,7 @@ var accordion = function accordion(headersSelector, blocksSelector) {
   }
 
   hideBlocks();
+  blocks[0].style.display = 'block';
   headers.forEach(function (item, i) {
     item.addEventListener('click', function () {
       hideBlocks();
@@ -5525,6 +5358,76 @@ var accordion = function accordion(headersSelector, blocksSelector) {
 
 /***/ }),
 
+/***/ "./src/js/modules/burgerMenu.js":
+/*!**************************************!*\
+  !*** ./src/js/modules/burgerMenu.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var burger = function burger() {
+  var menuBtn = document.querySelector('.burger'),
+      menuDialog = document.querySelector('.burger-menu'),
+      wrapper = document.createElement('div');
+  menuBtn.appendChild(wrapper);
+  wrapper.insertAdjacentHTML('beforeend', "<div></div><div></div><div></div>");
+
+  function changeBurger() {
+    var img = menuBtn.querySelector('img');
+    img.style.display = 'none';
+    wrapper.style.cssText = "display: flex;\n        width: 40px;\n        height: 20px;\n        flex-direction: column;\n        justify-content: space-around;\n        align-items: center;";
+    wrapper.querySelectorAll('div').forEach(function (item) {
+      item.style = "display: block; width: 70%; height: 2px; background-color: #fff;";
+    });
+  }
+
+  function rotateBurger() {
+    var div = wrapper.querySelectorAll('div');
+    wrapper.style.justifyContent = 'center';
+    div[0].style.cssText = "width: 70%; height: 2px; background-color: #fff; width: 70%; height: 2px; background-color: #fff; margin: 0; transform: translate(0, 50%) rotate(45deg);";
+    div[1].style = 'display: none';
+    div[2].style.cssText = "width: 70%; height: 2px; background-color: #fff; width: 70%; height: 2px; background-color: #fff; margin: 0; transform: translate(0, -50%) rotate(-45deg);";
+    menuBtn.classList.add('closeMenu');
+  }
+
+  menuBtn.addEventListener('click', function () {
+    if (window.innerWidth < 992) {
+      if (menuBtn.classList.contains('closeMenu')) {
+        changeBurger();
+        menuDialog.style.display = 'none';
+        menuBtn.classList.remove('closeMenu');
+      } else {
+        rotateBurger();
+        menuDialog.style.display = 'block';
+      }
+    }
+  });
+  window.addEventListener('load', function () {
+    if (window.innerWidth < 992) {
+      changeBurger();
+    }
+  });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 991) {
+      wrapper.style.display = 'none';
+      menuDialog.style.display = 'none';
+      menuBtn.querySelector('img').style.display = '';
+    } else {
+      changeBurger();
+    }
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (burger);
+
+/***/ }),
+
 /***/ "./src/js/modules/calc.js":
 /*!********************************!*\
   !*** ./src/js/modules/calc.js ***!
@@ -5534,54 +5437,33 @@ var accordion = function accordion(headersSelector, blocksSelector) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var core_js_modules_es_number_constructor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.number.constructor */ "./node_modules/core-js/modules/es.number.constructor.js");
-/* harmony import */ var core_js_modules_es_number_constructor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_number_constructor__WEBPACK_IMPORTED_MODULE_0__);
+var calc = function calc(size, material, options, result, promo, promoVerification) {
+  var sizeBlock = document.querySelector(size),
+      materialBlock = document.querySelector(material),
+      optionsBlock = document.querySelector(options),
+      promoBlock = document.querySelector(promo),
+      resultBlock = document.querySelector(result);
+  var sum = 0;
 
+  var calcFunc = function calcFunc() {
+    sum = Math.round(+sizeBlock.value + +materialBlock.value + +optionsBlock.value);
 
-var calc = function calc(args, resArea, promoInput, promoVerification) {
-  var area = document.querySelector(resArea),
-      promo = document.querySelector(promoInput),
-      size = document.querySelector(arguments.length <= 4 ? undefined : arguments[4]),
-      material = document.querySelector(arguments.length <= 5 ? undefined : arguments[5]),
-      options = document.querySelector(arguments.length <= 6 ? undefined : arguments[6]);
-
-  function changeInput(input) {
-    input.addEventListener('input', function () {
-      args[input.id] = Number(input.value);
-
-      if (input == promo) {
-        args.p = input.value.toUpperCase();
-      }
-
-      calculate();
-    });
-  }
-
-  changeInput(size);
-  changeInput(material);
-  changeInput(options);
-  changeInput(promo);
-
-  function calculate() {
-    if (args.size && args.material && args.options) {
-      var res = args.size + args.material + args.options;
-      area.textContent = UsePromo(args.p, res);
-    } else if (args.size && args.material && isNaN(args.options)) {
-      var _res = args.size + args.material;
-
-      area.textContent = UsePromo(args.p, _res);
+    if (sizeBlock.value == '' || materialBlock.value == '') {
+      resultBlock.textContent = 'Для расчета нужно выбрать размер картины и материал картины';
+    } else if (promoBlock.value === promoVerification) {
+      resultBlock.textContent = Math.round(sum * 0.7);
     } else {
-      area.textContent = 'Для расчета нужно выбрать размер картины и материал картины';
+      resultBlock.textContent = sum;
     }
-  }
+  };
 
-  function UsePromo(promo, sum) {
-    if (promo === promoVerification) {
-      sum = sum - sum * 0.3;
-    }
-
-    return sum;
-  }
+  sizeBlock.addEventListener('change', calcFunc);
+  materialBlock.addEventListener('change', calcFunc);
+  optionsBlock.addEventListener('change', calcFunc);
+  promoBlock.addEventListener('input', function () {
+    promoBlock.value = promoBlock.value.toUpperCase();
+    calcFunc();
+  });
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (calc);
@@ -5881,11 +5763,12 @@ var portfolio = function portfolio(menuSelector, blocksSelector) {
         item.classList.add('active');
         blocks.forEach(function (block) {
           block.style.display = 'none';
-
-          if (block.classList.contains(classes.change)) {
-            block.classList.add('animated', 'fadeIn');
-            block.style.display = 'block';
-          }
+          setTimeout(function () {
+            if (block.classList.contains(classes.change)) {
+              block.classList.add('animated', 'fadeIn');
+              block.style.display = '';
+            }
+          }, 10);
         });
         classes.curent = classes.change;
 

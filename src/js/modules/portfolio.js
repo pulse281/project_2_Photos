@@ -20,10 +20,12 @@ const portfolio = (menuSelector, blocksSelector) => {
 
                 blocks.forEach(block => {
                     block.style.display = 'none';
-                    if (block.classList.contains(classes.change)) {
-                        block.classList.add('animated', 'fadeIn');
-                        block.style.display = 'block';
-                    }
+                    setTimeout(() => {
+                        if (block.classList.contains(classes.change)) {
+                            block.classList.add('animated', 'fadeIn');
+                            block.style.display = '';
+                        }
+                    }, 10);
                 });
                 classes.curent = classes.change;
 

@@ -3,6 +3,7 @@ const accordion = (headersSelector, blocksSelector) => {
     const headers = document.querySelectorAll(headersSelector),
           blocks = document.querySelectorAll(blocksSelector);
 
+    
     function hideBlocks(){
         blocks.forEach(item => {
             item.classList.add('animated', 'zoomIn');
@@ -10,6 +11,7 @@ const accordion = (headersSelector, blocksSelector) => {
         });
     }
     hideBlocks();
+    blocks[0].style.display = 'block';
     
     headers.forEach((item, i) => {
         item.addEventListener('click', () => {
